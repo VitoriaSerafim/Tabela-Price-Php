@@ -365,6 +365,33 @@
         $("#cdcfieldset").draggable();
       });
     </script>
+<!-- 
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $("#priceForm").submit(function (event) {
+          // Impedir o envio do formulário padrão
+          event.preventDefault();
+
+          // Obter os dados do formulário
+          var formData = $(this).serialize();
+
+          // Enviar os dados para o servidor
+          $.ajax({
+            type: "POST",
+            url: "././api/price.php",
+            data: formData,
+            success: function (data) {
+              // Processar os resultados recebidos do servidor (pode adicionar aqui conforme necessário)
+              console.log(data);
+            },
+            error: function (error) {
+              // Lidar com erros de requisição
+              console.log(error.responseText);
+            },
+          });
+        });
+      });
+    </script> -->
 
     <script src="LCG.js"></script>
 
@@ -380,7 +407,7 @@
           // Enviar os dados para o servidor
           $.ajax({
             type: "POST",
-            url: "./api/price.php",
+            url: "././api/price.php",
             data: formData,
             success: function (data) {
               // Processar os resultados recebidos do servidor
@@ -407,20 +434,12 @@
           $("#resultTable").empty(); // Limpar a tabela existente, se houver
 
           // Adicionar cabeçalho da tabela
-          var tableHtml = `<table border='1'><tr><th>Mês</th><th>PMT</th><th>Juros</th><th>Amortização</th><th>Saldo Devedor</th></tr>
-              <tr>
-                <td>n</td>
-                <td>R = pmt</td>
-                <td>J = SD * t</td>
-                <td>U = pmt - J</td>
-                <td>SD = PV - U</td>
-            </tr>
-              `;
-          var total = 0;
+          var tableHtml =
+            "<table border='1'><tr><th>Mês</th><th>PMT</th><th>Juros</th><th>Amortização</th><th>Saldo Devedor</th></tr>";
           var jurosTotal = 0;
           var amtTotal = 0;
           var saldo = 0;
-
+              console.log(data);
           // Adicionar linhas da tabela
           data.resultTable.forEach(function (row) {
             tableHtml +=
@@ -435,14 +454,13 @@
               "</td><td>" +
               row.saldoDevedor +
               "</td></tr>";
-            total += row.pmt;
             jurosTotal += row.juros;
             amtTotal += row.amortizacao;
             saldo = row.saldoDevedor;
           });
           tableHtml +=
             "<td>Valor Total</td><td>" +
-            total.toFixed(2) +
+            data.totalPaid.toFixed(2) +
             "</td> <td>" +
             jurosTotal.toFixed(3) +
             "</td><td>" +
@@ -458,7 +476,7 @@
 
           $("#info1").html(
             "<p> Parcelamento: " +
-              ($("#idp").is(":checked") ? "1 + " + (data.np - 1) : data.np) +
+             ( $("#idp").is(":checked") ? "1 + " + (data.np) : data.np )+
               " meses </p> " +
               "<p> Taxa: " +
               data.tax +
@@ -481,10 +499,10 @@
 
           $("#info2").html(
             "<p>Prestação: $ " +
-             data.coef + " * "+ data.valorFinanciado + " = "+ data.pmt +
+              data.pmt +
               "</p>" +
               "<p> Coeficiente de financiamento:" +
-               data.coef+
+              data.coef +
               "% </p>" +
               " <p>Valor Pago: $" +
               data.totalPaid +
@@ -492,7 +510,7 @@
               "<p> Taxa Real (" +
               (data.tax == 0 ? data.count : "0") +
               " interações):" +
-              data.taxReal +
+              (data.tax ==  0 ? data.taxReal : '0') +
               "% ao mês </p> " +
               " <p>Valor Corrigido: $" +
               data.valorCorrigido +
