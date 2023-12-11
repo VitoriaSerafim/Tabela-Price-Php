@@ -213,7 +213,7 @@
       >
         <strong>Crédito Direto ao Consumidor</strong>
       </legend>
-      <form id="priceForm" action="price.php" method="post">
+      <form id="priceForm" action="./api/price.php" method="post">
         <div class="box">
           <span class="input-group-addon" style="color: antiquewhite">$</span>
           <label for="parc">Parcelamento:</label>
@@ -378,7 +378,7 @@
           // Enviar os dados para o servidor
           $.ajax({
             type: "POST",
-            url: "./price.php",
+            url: "././api/price.php",
             data: formData,
             success: function (data) {
               // Processar os resultados recebidos do servidor (pode adicionar aqui conforme necessário)
@@ -407,7 +407,7 @@
           // Enviar os dados para o servidor
           $.ajax({
             type: "POST",
-            url: "./price.php",
+            url: "./api/price.php",
             data: formData,
             success: function (data) {
               // Processar os resultados recebidos do servidor
