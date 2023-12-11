@@ -86,15 +86,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       $np -= 1; // uma prestação a menos
       $pv -= $pmt; // preço à vista menos a entrada
       $coeficienteFinanciamento = $pmt / $pv; // recalculate cf
-
-      $juros = $tax;
       $amortizacao = 0;
       $saldoDevedor = $pv;
 
       $resultTable[] = [
         "month" => 0,
         "pmt" => round($pmt, 2),
-        "juros" => round($juros, 2),
+        "juros" => $tax,
         "amortizacao" => round($amortizacao, 2),
         "saldoDevedor" => round($pv, 2),
     ];
