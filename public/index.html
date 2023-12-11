@@ -10,6 +10,7 @@
       rel="stylesheet"
       href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css"
     />
+
     <style type="text/css">
       .box {
         background-color: antiquewhite;
@@ -25,8 +26,12 @@
       }
 
       body {
-        background-color:rgb(137,40,198);
-        background: linear-gradient(90deg, rgba(137,40,198,1) 34%, rgba(125,57,221,1) 77%);
+        background-color: rgb(137, 40, 198);
+        background: linear-gradient(
+          90deg,
+          rgba(137, 40, 198, 1) 34%,
+          rgba(125, 57, 221, 1) 77%
+        );
         margin: 0;
         padding: 2em;
         font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
@@ -167,7 +172,7 @@
       #resultTable th {
         background-color: #7d7d7d;
       }
-      #infoWrapper{
+      #infoWrapper {
         margin-top: 5vh;
       }
       .button {
@@ -202,13 +207,13 @@
         style="
           border: 5px lightblue solid;
           margin-left: 1em;
-          background-color: #5a25b7;
+          background-color: #a047ff;
           padding: 0.2em 0.8em;
         "
       >
         <strong>Crédito Direto ao Consumidor</strong>
       </legend>
-      <form id="priceForm" action="../api/price.php" method="post">
+      <form id="priceForm" action="generate_price_table.php" method="post">
         <div class="box">
           <span class="input-group-addon" style="color: antiquewhite">$</span>
           <label for="parc">Parcelamento:</label>
@@ -326,30 +331,32 @@
       Voltar para Calculadora
     </button>
 
-    <div
-      class="info-box"
-      id="info1"
-      style="
-        float: left;
-        border: 2px solid green;
-        cursor: pointer;
-        margin-left: 10vw;
-        margin-right: 20px;
-        display: none;
-      "
-    ></div>
+    <div id="infoWrapper">
+      <div
+        class="info-box"
+        id="info1"
+        style="
+          float: left;
+          border: 5px solid rgb(107, 49, 169);
+          cursor: pointer;
+          margin-left: 10vw;
+          margin-right: 20px;
+          display: none;
+        "
+      ></div>
 
-    <div
-      class="info-box"
-      id="info2"
-      style="
-        border: 2px solid rgb(6, 6, 224);
-        display: none;
-        float: left;
-        cursor: pointer;
-        display: none;
-      "
-    ></div>
+      <div
+        class="info-box"
+        id="info2"
+        style="
+          border: 5px solid rgb(135, 13, 172);
+          display: none;
+          float: left;
+          cursor: pointer;
+          display: none;
+        "
+      ></div>
+    </div>
 
     <div id="resultTable" style="width: 50vw; margin-left: 20vw"></div>
 
@@ -358,7 +365,7 @@
         $("#cdcfieldset").draggable();
       });
     </script>
-
+<!-- 
     <script type="text/javascript">
       $(document).ready(function () {
         $("#priceForm").submit(function (event) {
@@ -371,7 +378,7 @@
           // Enviar os dados para o servidor
           $.ajax({
             type: "POST",
-            url: "../api/price.php",
+            url: "./generate_price_table.php",
             data: formData,
             success: function (data) {
               // Processar os resultados recebidos do servidor (pode adicionar aqui conforme necessário)
@@ -384,7 +391,7 @@
           });
         });
       });
-    </script>
+    </script> -->
 
     <script src="LCG.js"></script>
 
@@ -400,7 +407,7 @@
           // Enviar os dados para o servidor
           $.ajax({
             type: "POST",
-            url: "../api/price.php",
+            url: "./generate_price_table.php",
             data: formData,
             success: function (data) {
               // Processar os resultados recebidos do servidor
@@ -410,10 +417,10 @@
               $("#info1").show();
               $("#info2").show();
               // Verifique se o checkbox "imprimir" está marcado
-                var imprimir = $("#imprimir").is(":checked");
-                if (imprimir) {
-                    window.print();
-                }
+              var imprimir = $("#imprimir").is(":checked");
+              if (imprimir) {
+                window.print();
+              }
             },
             error: function (error) {
               // Lidar com erros de requisição
@@ -429,6 +436,10 @@
           // Adicionar cabeçalho da tabela
           var tableHtml =
             "<table border='1'><tr><th>Mês</th><th>PMT</th><th>Juros</th><th>Amortização</th><th>Saldo Devedor</th></tr>";
+          var total = 0;
+          var jurosTotal = 0;
+          var amtTotal = 0;
+          var saldo = 0;
 
           // Adicionar linhas da tabela
           data.resultTable.forEach(function (row) {
@@ -444,8 +455,21 @@
               "</td><td>" +
               row.saldoDevedor +
               "</td></tr>";
+            total += row.pmt;
+            jurosTotal += row.juros;
+            amtTotal += row.amortizacao;
+            saldo = row.saldoDevedor;
           });
-
+          tableHtml +=
+            "<td>Valor Total</td><td>" +
+            total.toFixed(2) +
+            "</td> <td>" +
+            jurosTotal.toFixed(3) +
+            "</td><td>" +
+            amtTotal.toFixed(2) +
+            "</td><td>" +
+            saldo.toFixed(2) +
+            "</td>";
           // Fechar a tabela
           tableHtml += "</table>";
 
@@ -454,7 +478,7 @@
 
           $("#info1").html(
             "<p> Parcelamento: " +
-              data.np +
+             ( $("#idp").is(":checked") ? "1 + " + (data.np - 1) : data.np )+
               " meses </p> " +
               "<p> Taxa: " +
               data.tax +
@@ -480,11 +504,19 @@
               data.pmt +
               "</p>" +
               "<p> Coeficiente de financiamento:" +
-                (data.tax == 0 ? data.coef : ' 0 ')+
+              (data.tax == 0 ? data.coef : " 0 ") +
               "% </p>" +
-              " <p>Valor Pago: $" +data.totalPaid +"</p>" +
-              "<p> Taxa Real ("+ (data.tax == 0 ? data.count : '0') +" interações):" + data.taxReal+"% ao mês </p> " +
-              " <p>Valor Corrigido: $" + data.valorCorrigido +"</p> "
+              " <p>Valor Pago: $" +
+              data.totalPaid +
+              "</p>" +
+              "<p> Taxa Real (" +
+              (data.tax == 0 ? data.count : "0") +
+              " interações):" +
+              data.taxReal +
+              "% ao mês </p> " +
+              " <p>Valor Corrigido: $" +
+              data.valorCorrigido +
+              "</p> "
           );
         }
       });
