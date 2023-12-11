@@ -365,33 +365,6 @@
         $("#cdcfieldset").draggable();
       });
     </script>
-<!-- 
-    <script type="text/javascript">
-      $(document).ready(function () {
-        $("#priceForm").submit(function (event) {
-          // Impedir o envio do formulário padrão
-          event.preventDefault();
-
-          // Obter os dados do formulário
-          var formData = $(this).serialize();
-
-          // Enviar os dados para o servidor
-          $.ajax({
-            type: "POST",
-            url: "././api/price.php",
-            data: formData,
-            success: function (data) {
-              // Processar os resultados recebidos do servidor (pode adicionar aqui conforme necessário)
-              console.log(data);
-            },
-            error: function (error) {
-              // Lidar com erros de requisição
-              console.log(error.responseText);
-            },
-          });
-        });
-      });
-    </script> -->
 
     <script src="LCG.js"></script>
 
@@ -434,8 +407,15 @@
           $("#resultTable").empty(); // Limpar a tabela existente, se houver
 
           // Adicionar cabeçalho da tabela
-          var tableHtml =
-            "<table border='1'><tr><th>Mês</th><th>PMT</th><th>Juros</th><th>Amortização</th><th>Saldo Devedor</th></tr>";
+          var tableHtml = `<table border='1'><tr><th>Mês</th><th>PMT</th><th>Juros</th><th>Amortização</th><th>Saldo Devedor</th></tr>
+              <tr>
+                <td>n</td>
+                <td>R = pmt</td>
+                <td>J = SD * t</td>
+                <td>U = pmt - J</td>
+                <td>SD = PV - U</td>
+            </tr>
+              `;
           var total = 0;
           var jurosTotal = 0;
           var amtTotal = 0;
@@ -478,7 +458,7 @@
 
           $("#info1").html(
             "<p> Parcelamento: " +
-             ( $("#idp").is(":checked") ? "1 + " + (data.np - 1) : data.np )+
+              ($("#idp").is(":checked") ? "1 + " + (data.np - 1) : data.np) +
               " meses </p> " +
               "<p> Taxa: " +
               data.tax +
@@ -501,10 +481,10 @@
 
           $("#info2").html(
             "<p>Prestação: $ " +
-              data.pmt +
+             data.coef + " * "+ data.valorFinanciado + " = "+ data.pmt +
               "</p>" +
               "<p> Coeficiente de financiamento:" +
-              (data.tax == 0 ? data.coef : " 0 ") +
+               data.coef+
               "% </p>" +
               " <p>Valor Pago: $" +
               data.totalPaid +
