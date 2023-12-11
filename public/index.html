@@ -365,7 +365,7 @@
         $("#cdcfieldset").draggable();
       });
     </script>
-<!-- 
+    <!-- 
     <script type="text/javascript">
       $(document).ready(function () {
         $("#priceForm").submit(function (event) {
@@ -434,12 +434,19 @@
           $("#resultTable").empty(); // Limpar a tabela existente, se houver
 
           // Adicionar cabeçalho da tabela
-          var tableHtml =
-            "<table border='1'><tr><th>Mês</th><th>PMT</th><th>Juros</th><th>Amortização</th><th>Saldo Devedor</th></tr>";
+          var tableHtml = `<table border='1'><tr><th>Mês</th><th>PMT</th><th>Juros</th><th>Amortização</th><th>Saldo Devedor</th></tr>
+              <tr>
+                <td>n</td>
+                <td>R = pmt</td>
+                <td>J = SD * t</td>
+                <td>U = pmt - J</td>
+                <td>SD = PV - U</td>
+            </tr>
+              `;
           var jurosTotal = 0;
           var amtTotal = 0;
           var saldo = 0;
-              console.log(data);
+          console.log(data);
           // Adicionar linhas da tabela
           data.resultTable.forEach(function (row) {
             tableHtml +=
@@ -476,7 +483,7 @@
 
           $("#info1").html(
             "<p> Parcelamento: " +
-             ( $("#idp").is(":checked") ? "1 + " + (data.np) : data.np )+
+              ($("#idp").is(":checked") ? "1 + " + data.np : data.np) +
               " meses </p> " +
               "<p> Taxa: " +
               data.tax +
@@ -510,7 +517,7 @@
               "<p> Taxa Real (" +
               (data.tax == 0 ? data.count : "0") +
               " interações):" +
-              (data.tax ==  0 ? data.taxReal : '0') +
+              (data.tax == 0 ? data.taxReal : "0") +
               "% ao mês </p> " +
               " <p>Valor Corrigido: $" +
               data.valorCorrigido +
