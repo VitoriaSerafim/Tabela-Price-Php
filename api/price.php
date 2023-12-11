@@ -81,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       );
     }
 
-    if ($_POST["dp"]) {
+    if (isset($_POST["dp"])) {
       $pmt /= 1 + $tax; // diminui a prestação
       $np -= 1; // uma prestação a menos
       $pv -= $pmt; // preço à vista menos a entrada
